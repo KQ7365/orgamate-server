@@ -5,14 +5,24 @@ from orgamateapi.models import Priority
 
 class PrioritySerializer(serializers.ModelSerializer):
 
-    def get_is_owner(self, obj):
-        # Check if the user is the owner of the review (this will still run the check and i dont need to add it to the fields! )
-        return self.context['request'].user == obj.user
-    
     class Meta:
         model = Priority
         fields = ['id', 'label']
 
 class PriorityViewSet(viewsets.ViewSet):
-    pass
-#TODO: May want to do a PR and then finish this out. Need to post 3 priorities so I can then finish Task!
+    permission_classes = [permissions.AllowAny]
+
+    def list(self, request):
+        tasks = Priority.objects.all()
+        serializer = PrioritySerializer(tasks, many=True, context={'request': request}) 
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+    def create(self, request):
+        label = request.data.get('label')
+
+        create = Priority.objects.create(
+            label=label
+        )
+
+        serializer = PrioritySerializer(create, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
