@@ -17,11 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from orgamateapi.views.users import UserViewSet
 from rest_framework.routers import DefaultRouter
-from orgamateapi.views import TaskViewSet
+from orgamateapi.views import TaskViewSet, PriorityViewSet
 from django.urls import path, include
 
 router = DefaultRouter(trailing_slash=False)
 router.register(r'tasks', TaskViewSet, 'task')
+router.register(r'priorities', PriorityViewSet, 'priority')
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
