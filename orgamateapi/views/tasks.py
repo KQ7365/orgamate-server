@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status, serializers, permissions
+from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 
 from orgamateapi.models import Task, Priority
@@ -9,20 +9,28 @@ class TaskSerializer(serializers.ModelSerializer):
     priority = PrioritySerializer(many=False)
 
     def get_is_owner(self, obj):
-        # Check if the user is the owner of the review (this will still run the check and i dont need to add it to the fields! )
+        # Check if the user is the owner of the task (this will still run the check and i dont need to add it to the fields! )
         return self.context['request'].user == obj.user
     
     class Meta:
         model = Task
         fields = ['id','task_item', 'note', 'isComplete', 'date_added', 'priority', 'user']
-     
 
 class TaskViewSet(viewsets.ViewSet):
 
     def list(self, request):
-        tasks = Task.objects.all()
-        serializer = TaskSerializer(tasks, many=True, context={'request': request}) 
+        # Filter tasks based on the current user
+        tasks = Task.objects.filter(user=request.user)
+        serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+    def retrieve(self, request, pk=None):
+        try:
+            task = Task.objects.get(pk=pk)
+            serializer = TaskSerializer(task, context={'request': request})
+            return Response(serializer.data)
+        except Task.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
     
 
     def create(self, request):
