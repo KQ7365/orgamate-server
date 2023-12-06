@@ -17,6 +17,14 @@ class PriorityViewSet(viewsets.ViewSet):
         serializer = PrioritySerializer(tasks, many=True, context={'request': request}) 
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
     
+    def retrieve(self, request, pk=None):
+        try:
+            priority = Priority.objects.get(pk=pk)
+            serializer = PrioritySerializer(priority, context={'request': request})
+            return Response(serializer.data)
+        except Priority.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    
     def create(self, request):
         label = request.data.get('label')
 
