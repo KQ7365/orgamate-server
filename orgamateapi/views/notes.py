@@ -31,16 +31,16 @@ class NoteViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
     def create(self, request):
-        item = Item.objects.get(pk=request.data['item'])
-        # Create a new instance of a review and assign property
-        note = Note()
-       
-        note.item = item
-        note.comment = request.data['comment']
-        note.user = request.auth.user
-        note.save()
-
         try:
+            item = Item.objects.get(pk=request.data['item'])
+            # Create a new instance of a note and assign properties
+            note = Note(
+                item=item,
+                comment=request.data['comment'],
+                user=request.auth.user
+            )
+            note.save()
+
             serializer = NoteSerializer(note, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -61,3 +61,21 @@ class NoteViewSet(viewsets.ViewSet):
         except Note.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
+    def update(self, request, pk=None):
+        try:
+            note = Note.objects.get(pk=pk)
+            
+            self.check_object_permissions(request, note)
+
+            serializer = NoteSerializer(data=request.data, instance=note, partial=True)
+            if serializer.is_valid():
+                serializer.save(user=request.auth.user)
+
+                updated_note = serializer.instance
+                updated_serializer = NoteSerializer(updated_note, context={'request': request})
+                return Response(updated_serializer.data, status.HTTP_202_ACCEPTED)
+
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+        except Note.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
