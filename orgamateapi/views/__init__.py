@@ -4,3 +4,4 @@ from .priorities import PriorityViewSet, PrioritySerializer
 from .categories import CategoryViewSet, CategorySerializer
 from .locations import LocationViewSet, LocationSerializer
 from .tags import TagViewSet, TagSerializer
+from .items import ItemViewSet, ItemSerializer
