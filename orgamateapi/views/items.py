@@ -19,8 +19,6 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = ['id', 'image', 'name', 'description', 'category', 'location', 'tags', 'user']
     
-
-
 class ItemViewSet(viewsets.ViewSet):
     
     def list(self, request):
@@ -73,4 +71,3 @@ class ItemViewSet(viewsets.ViewSet):
         except Item.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        #TODO: ALL WORKS! Write up PR for this and then do last table!!
