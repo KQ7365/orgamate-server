@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from orgamateapi.views.users import UserViewSet
 from rest_framework.routers import DefaultRouter
-from orgamateapi.views import TaskViewSet, PriorityViewSet, CategoryViewSet, LocationViewSet, TagViewSet
+from orgamateapi.views import TaskViewSet, PriorityViewSet, CategoryViewSet, LocationViewSet, TagViewSet, ItemViewSet
 from django.urls import path, include
 
 router = DefaultRouter(trailing_slash=False)
@@ -26,6 +26,8 @@ router.register(r'priorities', PriorityViewSet, 'priority')
 router.register(r'categories', CategoryViewSet, 'category')
 router.register(r'locations', LocationViewSet, 'location')
 router.register(r'tags', TagViewSet, 'tag')
+router.register(r'items', ItemViewSet, 'item')
+
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
 # ]
