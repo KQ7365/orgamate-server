@@ -5,8 +5,10 @@ from orgamateapi.models import Priority, Location, Item, Category
 from .locations import LocationSerializer
 from .categories import CategorySerializer
 from .tags import TagSerializer
+from .notes import NoteSerializer
 
 class ItemSerializer(serializers.ModelSerializer):
+    noteItemId = NoteSerializer(many=True)
     category = CategorySerializer(many=False)
     location = LocationSerializer(many=False)
     tags = TagSerializer(many=True)
@@ -17,8 +19,9 @@ class ItemSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Item
-        fields = ['id', 'image', 'name', 'description', 'category', 'location', 'tags', 'user']
-    
+        fields = ['id', 'image', 'name', 'description', 'category', 'location', 'tags', 'user', 'noteItemId']
+        #Note to self: noteItemId was so when we want to view an item details, we see attributed notes. I had it the other way around and thats incorrect. It creates whats called a
+        #circular serialization
 class ItemViewSet(viewsets.ViewSet):
     
     def list(self, request):

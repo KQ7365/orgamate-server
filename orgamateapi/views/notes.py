@@ -2,17 +2,17 @@ from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 
 from orgamateapi.models import Note, Item
-from .items import ItemSerializer
+
 
 class NoteSerializer(serializers.ModelSerializer):
-    item = ItemSerializer(many=False)
+   
 
     def get_is_owner(self, obj):
         return self.context['request'].user == obj.user
     
     class Meta:
         model = Note
-        fields = ['id', 'item', 'comment', 'date', 'user' ]
+        fields = ['id','comment', 'date', 'user' ]
 
 class NoteViewSet(viewsets.ViewSet):
     
